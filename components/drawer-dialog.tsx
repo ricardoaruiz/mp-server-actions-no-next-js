@@ -66,7 +66,9 @@ export function DrawerDialog() {
             Cadastre um pedido. Clique em salvar quando terminar.
           </DrawerDescription>
         </DrawerHeader>
-        <OrderForm />
+        <div className='p-4'>
+          <OrderForm />
+        </div>
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
             <Button variant="outline">Cancelar</Button>
