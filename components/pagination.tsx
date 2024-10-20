@@ -1,5 +1,6 @@
 'use client';
 
+import { MetaLink } from '@/actions/types';
 import {
   Pagination as PaginationComponent,
   PaginationContent,
@@ -9,117 +10,71 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { buildPathWithSearchParams } from '@/helpers/url';
+import { cn } from '@/lib/utils';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 type PaginationProps = {
-  links: {
-    url: string;
-    label: string;
-    active: boolean;
-    id: number;
-  }[];
-  lastPage: number;
-};
+  data: MetaLink[]
+}
 
-export default function Pagination({ links, lastPage }: PaginationProps) {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
-
-  function handleClickPage(pageNumber: number) {
-    const params = new URLSearchParams(searchParams);
-
-    if (pageNumber > 1) {
-      if (pageNumber > lastPage) {
-        params.set('page', lastPage.toString());
-      } else {
-        params.set('page', pageNumber.toString());
-      }
-    } else {
-      params.delete('page');
-    }
-
-    replace(`${pathname}?${params.toString()}`, { scroll: false });
-  }
+export default function Pagination({ data = [] }: PaginationProps) {
+  const pathName = usePathname()
+  const searchParams = useSearchParams()
+  
   return (
     <PaginationComponent>
       <PaginationContent>
-        <PaginationItem
-          className={`${
-            links[0].url
-              ? 'cursor-pointer'
-              : 'cursor-auto text-slate-300 hover:text-slate-300'
-          }`}
-          onClick={() =>
-            handleClickPage(Number(searchParams.get('page') || 1) - 1)
-          }
-        >
-          <PaginationPrevious />
-        </PaginationItem>
+        {data.map((link, index) => {
+          const isFirst = index === 0
+          const isLast = index === data.length - 1
+          const isFirstOrLast = isFirst || isLast
 
-        {links.map((link) => {
-          if (link.label.includes('Previous') || link.label.includes('Next')) {
-            return null;
-          }
+          if (isFirstOrLast) {
+            const url = link.url ? new URL(link.url) : null
 
-          if (link.label === '...') {
+            let to = ''
+            if (url) {
+              const params = new URLSearchParams(url.search)
+              const page = params.get('page')
+
+              to = page ? buildPathWithSearchParams({
+                pathName, 
+                searchParams, 
+                search: [
+                  { name:'page', value: page === '1' ? '' : page}
+                ]
+              }) : ''
+            }
+
+            console.log('to', to)
+
             return (
-              <PaginationItem key={link.id} className="hidden md:inline-flex">
-                <PaginationEllipsis />
+              <PaginationItem key={link.label} className={cn("hidden md:inline-flex", {
+                'bg-transparent hover:bg-transparent text-slate-400 pointer-events-none': !to,
+              })}>
+                {isFirst ? <PaginationPrevious href={to} /> : <PaginationNext href={to}/>}
               </PaginationItem>
-            );
+            )
           }
+
+          const isEllipsis = link.label === '...'
+          const url = !isEllipsis ? buildPathWithSearchParams({
+            pathName, 
+            searchParams, 
+            search: [
+              { name:'page', value: link.label === '1' ? '' : link.label}
+            ]
+          }) : '#'
 
           return (
-            <PaginationItem key={link.id} className="cursor-pointer">
-              <PaginationLink
-                onClick={() => handleClickPage(Number(link.label))}
-                isActive={link.active}
-                dangerouslySetInnerHTML={{ __html: link.label }}
-              ></PaginationLink>
-            </PaginationItem>
-          );
-        })}
-
-        <PaginationItem
-          className={`${
-            links[links.length - 1].url
-              ? 'cursor-pointer'
-              : 'cursor-auto text-slate-300'
-          }`}
-          onClick={() =>
-            handleClickPage(Number(searchParams.get('page') || 1) + 1)
-          }
-        >
-          <PaginationNext />
-        </PaginationItem>
-        {/* <PaginationItem>
-          <PaginationPrevious />
-        </PaginationItem>
-        <PaginationItem className="hidden md:inline-flex">
-          <PaginationLink isActive={true}>1</PaginationLink>
-        </PaginationItem>
-        <PaginationItem className="hidden md:inline-flex">
-          <PaginationLink>2</PaginationLink>
-        </PaginationItem>
-        <PaginationItem className="hidden md:inline-flex">
-          <PaginationLink>3</PaginationLink>
-        </PaginationItem>
-        <PaginationItem className="hidden md:inline-flex">
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem className="hidden md:inline-flex">
-          <PaginationLink>8</PaginationLink>
-        </PaginationItem>
-        <PaginationItem className="hidden md:inline-flex">
-          <PaginationLink>9</PaginationLink>
-        </PaginationItem>
-        <PaginationItem className="hidden md:inline-flex">
-          <PaginationLink>10</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext />
-        </PaginationItem> */}
+          <PaginationItem key={`${link.label}${index}`} className="hidden md:inline-flex">
+            {isEllipsis 
+              ? <PaginationEllipsis /> 
+              : <PaginationLink href={url} isActive={link.active}>{link.label}</PaginationLink>
+            }
+          </PaginationItem>
+        )})}
       </PaginationContent>
     </PaginationComponent>
   );

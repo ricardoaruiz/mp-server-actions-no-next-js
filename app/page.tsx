@@ -1,3 +1,4 @@
+import { orderList } from '@/actions/order-list';
 import { DrawerDialog } from '@/components/drawer-dialog';
 import FilterDropdown from '@/components/filter-dropdown';
 import OrdersTable from '@/components/orders-table';
@@ -23,24 +24,15 @@ type ComponentProps = {
 };
 
 export default async function Component({ searchParams }: ComponentProps) {
-  const response = await axios.get(
-    'https://apis.codante.io/api/orders-api/orders',
-    {
-      params: {
-        search: searchParams?.search,
-        status: searchParams?.status,
-        sort: searchParams?.sort ?? '-created_at',
-        page: searchParams?.page,
-      },
-    }
-  );
-
-  const orders = response.data.data;
-  const lastPage = response.data.meta.last_page;
-  let links: { url: string; label: string; active: boolean; id: number }[] =
-    response.data.meta.links;
-
-  links = links.map((link, index) => ({ ...link, id: index }));
+  const orderListData = await orderList({
+    filter: {
+      search: searchParams?.search,
+      status: searchParams?.status
+    },
+    order: searchParams?.sort,
+    page: Number(searchParams?.page ?? 1)
+    
+  }) 
 
   return (
     <main className="container px-1 py-10 md:p-10">
@@ -61,9 +53,9 @@ export default async function Component({ searchParams }: ComponentProps) {
           </div>
         </CardHeader>
         <CardContent>
-          <OrdersTable orders={orders} />
+          <OrdersTable data={orderListData.data} />
           <div className="mt-8">
-            <Pagination links={links} lastPage={lastPage} />
+            <Pagination data={orderListData.meta.links} />
           </div>
         </CardContent>
       </Card>

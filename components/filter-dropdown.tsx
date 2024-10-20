@@ -12,29 +12,29 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Filter } from 'lucide-react';
-import { useState } from 'react';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { buildPathWithSearchParams } from '@/helpers/url';
 
 export default function FilterDropdown() {
-  // state can be '', 'pending' or 'completed'
-  const [filterStatus, setFilterStatus] = useState('');
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const pathName = usePathname()
+  const searchParams = useSearchParams()
+  const route = useRouter()
+  const status = searchParams.get('status')  ?? ''
+  
+  const handleOnValueChange = (value: string) => {
+    
+    const url = buildPathWithSearchParams({
+      pathName, 
+      searchParams, 
+      search: [
+        { name:'status', value: value},
+        { name:'page', value: '1'}
+      ]
+    }) 
 
-  function handleChangeFilter(value: string) {
-    const params = new URLSearchParams(searchParams);
-
-    if (value) {
-      params.set('status', value);
-    } else {
-      params.delete('status');
-    }
-
-    replace(`${pathname}?${params.toString()}`);
-    setFilterStatus(value);
+    route.replace(url)
   }
-
+  
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -51,10 +51,7 @@ export default function FilterDropdown() {
       <DropdownMenuContent className="w-16">
         <DropdownMenuLabel>Filtrar por:</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup
-          value={filterStatus}
-          onValueChange={handleChangeFilter}
-        >
+        <DropdownMenuRadioGroup value={status} onValueChange={handleOnValueChange}>
           <DropdownMenuRadioItem value="">Todos</DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="pending">
             Pendente

@@ -2,27 +2,28 @@
 
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { buildPathWithSearchParams } from '@/helpers/url';
 import { useDebouncedCallback } from 'use-debounce';
 
 export default function SearchInput() {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const pathName = usePathname()
+  const searchParams = useSearchParams()
+  const route = useRouter()
+  const search = (searchParams.get('search') ?? '').toLowerCase()
 
-  const handleChange = useDebouncedCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const params = new URLSearchParams(searchParams);
-      const searchString = event.target.value;
+  const handleOnValueChange = useDebouncedCallback((value: string) => {   
+    const url = buildPathWithSearchParams({
+      pathName, 
+      searchParams, 
+      search: [
+        { name:'search', value},
+        { name:'page', value: '1'}
+      ]
+    })    
 
-      if (searchString) {
-        params.set('search', searchString);
-      } else {
-        params.delete('search');
-      }
-      replace(`${pathname}?${params.toString()}`);
-    }, 500
-  );
+    route.replace(url)    
+  }, 300)
 
   return (
     <div className="relative">
@@ -31,7 +32,8 @@ export default function SearchInput() {
         type="search"
         placeholder="Busque por nome..."
         className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-        onChange={handleChange}
+        defaultValue={search}
+        onChange={(e) => handleOnValueChange(e.currentTarget.value.toLowerCase())}
       />
     </div>
   );
