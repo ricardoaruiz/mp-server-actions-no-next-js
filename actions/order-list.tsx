@@ -2,9 +2,7 @@
 
 import { Order } from "@/model";
 import { OrderListRequest, OrderListResponse } from "./types";
-import { BASE_URL } from "./constants";
-
-const ORDER_URL = `${BASE_URL}/orders`;
+import { ORDER_URL } from "./constants";
 
 /**
  * Builds a URL based on the provided filter, order, and page parameters.

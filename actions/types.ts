@@ -69,7 +69,7 @@ export type OrderFormFieldErrors = {
   status?: string[] | undefined;
 };
 
-export type OrderFormPrevState = FormPrevState<OrderFormFieldErrors>;
+export type CreateOrderFormPrevState = FormPrevState<OrderFormFieldErrors>;
 
 export type OrderFormData = Omit<
   z.infer<typeof CREATE_ORDER_FORM_SCHEMA>,
@@ -77,3 +77,6 @@ export type OrderFormData = Omit<
 > & {
   amount_in_cents: number | string;
 };
+
+// ==== Order Delete
+export type DeleteOrderFormPrevState = FormPrevState<void>;

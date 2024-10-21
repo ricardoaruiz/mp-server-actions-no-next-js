@@ -4,20 +4,17 @@ import {
   FormFieldsValidationException,
   validateFormFields,
 } from "@/helpers/form-validation";
-import { BASE_URL, CREATE_ORDER_FORM_SCHEMA } from "./constants";
-import { revalidateTag } from "next/cache";
+import { CREATE_ORDER_FORM_SCHEMA, ORDER_URL } from "./constants";
 import {
   OrderFormData,
   OrderFormFieldErrors,
-  OrderFormPrevState,
+  CreateOrderFormPrevState,
 } from "./types";
 
-const ORDER_URL = `${BASE_URL}/orders`;
-
 export async function orderCreate(
-  _prevState: OrderFormPrevState,
+  _prevState: CreateOrderFormPrevState,
   data: FormData
-): Promise<OrderFormPrevState> {
+): Promise<CreateOrderFormPrevState> {
   try {
     const {
       customer_name,
@@ -48,7 +45,6 @@ export async function orderCreate(
       throw new Error();
     }
 
-    revalidateTag("orders");
     return {
       ok: true,
       message: "Order created",

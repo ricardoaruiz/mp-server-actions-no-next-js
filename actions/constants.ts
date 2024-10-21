@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-export const BASE_URL= 'https://apis.codante.io/api/orders-api'
+const BASE_URL= 'https://apis.codante.io/api/orders-api'
+export const ORDER_URL = `${BASE_URL}/orders`;
 
 export const CREATE_ORDER_FORM_SCHEMA = z.object({
   customer_name: z.string().min(1, "Required field"),

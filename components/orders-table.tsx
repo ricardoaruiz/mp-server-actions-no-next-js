@@ -15,10 +15,8 @@ import { Order } from "@/model";
 import { cn } from "@/lib/utils";
 import { convertToBrazilianReal } from "@/lib/currency";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { SortDirection } from "@/actions/types";
 import { buildPathWithSearchParams } from "@/helpers/url";
 import DeleteButton from "./delete-button";
-import { format } from "date-fns";
 
 type OrdersTableProps = ComponentProps<typeof Table> & {
   data: Order[];
@@ -108,7 +106,7 @@ export default function OrdersTable({
               {convertToBrazilianReal(order.amount_in_cents)}
             </TableCell>
             <TableCell className="text-right">
-              <DeleteButton />
+              <DeleteButton orderId={order.id} />
             </TableCell>
           </TableRow>
         ))}

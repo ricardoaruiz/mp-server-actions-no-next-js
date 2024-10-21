@@ -18,13 +18,14 @@ import { useFormState, useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
 import toast from "react-hot-toast";
-import { OrderFormPrevState } from "@/actions/types";
+import { CreateOrderFormPrevState } from "@/actions/types";
+import { revalidateTagClient } from "@/actions/revalidate";
 
 type OrderFormProps = ComponentProps<"form"> & {
   onSuccess: () => void;
 };
 
-const prevState: OrderFormPrevState = {};
+const prevState: CreateOrderFormPrevState = {};
 
 export default function OrderForm({
   onSuccess,
@@ -40,10 +41,11 @@ export default function OrderForm({
     if (state.ok) {
       onSuccess();
       toast.success("Pedido criado com sucesso!");
+      revalidateTagClient("orders");
     }
 
     if (!state.ok) {
-      toast.error(state.message ?? "");
+      toast.error("Problema ao criar o pedido");
     }
   }, [onSuccess, state]);
 
