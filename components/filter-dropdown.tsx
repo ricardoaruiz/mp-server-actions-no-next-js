@@ -12,27 +12,19 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Filter } from 'lucide-react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { buildPathWithSearchParams } from '@/helpers/url';
+import { useRouteHandler } from '@/hooks/useRouteHandler';
 
 export default function FilterDropdown() {
-  const pathName = usePathname()
-  const searchParams = useSearchParams()
-  const route = useRouter()
+  const { searchParams, replaceUrl } = useRouteHandler()
   const status = searchParams.get('status')  ?? ''
   
-  const handleOnValueChange = (value: string) => {
-    
-    const url = buildPathWithSearchParams({
-      pathName, 
-      searchParams, 
+  const handleOnValueChange = (value: string) => {    
+    replaceUrl({
       search: [
-        { name:'status', value: value},
+        { name:'status', value},
         { name:'page', value: '1'}
       ]
-    }) 
-
-    route.replace(url)
+    })
   }
   
   return (

@@ -14,10 +14,9 @@ import { ComponentProps, useMemo } from "react";
 import { Order } from "@/model";
 import { cn } from "@/lib/utils";
 import { convertToBrazilianReal } from "@/lib/currency";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { buildPathWithSearchParams } from "@/helpers/url";
 import DeleteButton from "./delete-button";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
+import { useRouteHandler } from "@/hooks/useRouteHandler";
 
 type OrdersTableProps = ComponentProps<typeof Table> & {
   data: Order[];
@@ -28,9 +27,7 @@ export default function OrdersTable({
   className,
   ...props
 }: OrdersTableProps) {
-  const searchParams = useSearchParams();
-  const pathName = usePathname();
-  const route = useRouter();
+  const { searchParams, replaceUrl } = useRouteHandler()
   const sort = searchParams.get("sort") ?? "";
 
   const getSortIndicator = (fieldName: string) => {
@@ -50,15 +47,13 @@ export default function OrdersTable({
       value = sort.startsWith("-") ? "" : `-${fieldName}`;
     }
 
-    const url = buildPathWithSearchParams({
-      pathName,
-      searchParams,
+    replaceUrl({
       search: { name: "sort", value },
-    });
-
-    route.replace(url, {
-      scroll: false,
-    });
+      options: {
+        scroll: false,
+      }
+    })
+    
   };
 
   return (

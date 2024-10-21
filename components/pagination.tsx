@@ -10,17 +10,15 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { buildPathWithSearchParams } from "@/helpers/url";
+import { useRouteHandler } from "@/hooks/useRouteHandler";
 import { cn } from "@/lib/utils";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type PaginationProps = {
   data: MetaLink[];
 };
 
 export default function Pagination({ data = [] }: PaginationProps) {
-  const pathName = usePathname();
-  const searchParams = useSearchParams();
+  const { getUrl } = useRouteHandler()
 
   return (
     <PaginationComponent>
@@ -39,9 +37,7 @@ export default function Pagination({ data = [] }: PaginationProps) {
               const page = params.get("page");
 
               to = page
-                ? buildPathWithSearchParams({
-                    pathName,
-                    searchParams,
+                ? getUrl({
                     search: [{ name: "page", value: page === "1" ? "" : page }],
                   })
                 : "";
@@ -66,9 +62,7 @@ export default function Pagination({ data = [] }: PaginationProps) {
 
           const isEllipsis = link.label === "...";
           const url = !isEllipsis
-            ? buildPathWithSearchParams({
-                pathName,
-                searchParams,
+            ? getUrl({
                 search: [
                   { name: "page", value: link.label === "1" ? "" : link.label },
                 ],
