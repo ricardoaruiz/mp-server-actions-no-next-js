@@ -2,7 +2,7 @@ export type Order = {
   id: number;
   customer_name: string;
   customer_email: string;
-  order_date: Date;
+  order_date: string;
   amount_in_cents: number;
   status: string;
   created_at: Date;
