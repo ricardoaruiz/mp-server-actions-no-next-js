@@ -11,13 +11,14 @@ import { Button } from "./ui/button";
 import { DatePicker } from "./ui/date-picker";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { orderCreate, OrderFormPrevState } from "@/actions/order-create";
+import { orderCreate } from "@/actions/order-create";
 import { ComponentProps, useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 import { useFormState, useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
 import toast from "react-hot-toast";
+import { OrderFormPrevState } from "@/actions/types";
 
 type OrderFormProps = ComponentProps<"form"> & {
   onSuccess: () => void;

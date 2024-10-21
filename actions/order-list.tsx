@@ -1,16 +1,8 @@
 "use server";
 
 import { Order } from "@/model";
-import { APIRequest, APIResponse } from "./types";
+import { OrderListRequest, OrderListResponse } from "./types";
 import { BASE_URL } from "./constants";
-
-type OrderFilter = {
-  status?: string;
-  search?: string;
-};
-
-type OrderListRequest = APIRequest<OrderFilter>;
-type OrderListResponse = APIResponse<Order[]>;
 
 const ORDER_URL = `${BASE_URL}/orders`;
 
