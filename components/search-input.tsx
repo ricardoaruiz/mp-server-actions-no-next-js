@@ -2,15 +2,15 @@
 
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { useDebouncedCallback } from 'use-debounce';
 import { useRouteHandler } from '@/hooks/useRouteHandler';
+import { useDebounceCallback } from 'usehooks-ts'
 
 export default function SearchInput() {
 
   const { searchParams, replaceUrl } = useRouteHandler()
   const search = (searchParams.get('search') ?? '').toLowerCase()
 
-  const handleOnValueChange = useDebouncedCallback((value: string) => {   
+  const handleOnValueChange = useDebounceCallback((value: string) => {   
     replaceUrl({
       search: [
         { name:'search', value},
