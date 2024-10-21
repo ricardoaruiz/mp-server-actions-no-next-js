@@ -1,6 +1,8 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import {motion} from "framer-motion";
+import { HTMLMotionProps } from "framer-motion";
 
 const Table = React.forwardRef<
   HTMLTableElement,
@@ -53,14 +55,18 @@ TableFooter.displayName = "TableFooter"
 
 const TableRow = React.forwardRef<
   HTMLTableRowElement,
-  React.HTMLAttributes<HTMLTableRowElement>
+  HTMLMotionProps<'tr'>
 >(({ className, ...props }, ref) => (
-  <tr
+  <motion.tr
     ref={ref}
     className={cn(
       "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
       className
     )}
+    initial={{ opacity: 0 }}    
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 1.0 }}
     {...props}
   />
 ))

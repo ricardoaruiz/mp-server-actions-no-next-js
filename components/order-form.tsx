@@ -19,7 +19,6 @@ import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
 import toast from "react-hot-toast";
 import { CreateOrderFormPrevState } from "@/actions/types";
-import { revalidateTagClient } from "@/actions/revalidate";
 
 type OrderFormProps = ComponentProps<"form"> & {
   onSuccess: () => void;
@@ -41,7 +40,6 @@ export default function OrderForm({
     if (state.ok) {
       onSuccess();
       toast.success("Pedido criado com sucesso!");
-      revalidateTagClient("orders");
     }
 
     if (!state.ok) {

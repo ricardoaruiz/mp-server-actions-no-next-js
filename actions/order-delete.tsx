@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath, revalidateTag } from "next/cache";
 import { ORDER_URL } from "./constants";
 import { DeleteOrderFormPrevState } from "./types";
 
@@ -17,6 +18,8 @@ export async function deleteOrder(
     const response = await fetch(`${ORDER_URL}/${orderId}`, {
       method: "DELETE",
     });
+
+    revalidateTag("orders");
 
     if (!response.ok) {
       throw new Error();

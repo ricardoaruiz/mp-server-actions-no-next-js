@@ -7,7 +7,6 @@ import { DeleteOrderFormPrevState } from "@/actions/types";
 import { deleteOrder } from "@/actions/order-delete";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { revalidateTagClient } from "@/actions/revalidate";
 
 const prevState: DeleteOrderFormPrevState = {};
 
@@ -23,7 +22,6 @@ export default function DeleteButton({ orderId }: DeleteButtonProps) {
 
     if (state.ok) {
       toast.success("Pedido removido com sucesso");
-      revalidateTagClient("orders");
     }
 
     if (!state.ok) {

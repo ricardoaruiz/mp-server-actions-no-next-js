@@ -17,6 +17,7 @@ import { convertToBrazilianReal } from "@/lib/currency";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { buildPathWithSearchParams } from "@/helpers/url";
 import DeleteButton from "./delete-button";
+import { motion, AnimatePresence } from "framer-motion";
 
 type OrdersTableProps = ComponentProps<typeof Table> & {
   data: Order[];
@@ -86,30 +87,32 @@ export default function OrdersTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((order) => (
-          <TableRow key={order.id}>
-            <TableCell>
-              <div className="font-medium">{order.customer_name}</div>
-              <div className="hidden md:inline text-sm text-muted-foreground">
-                {order.customer_email}
-              </div>
-            </TableCell>
-            <TableCell>
-              <Badge className={`text-xs`} variant="outline">
-                {order.status}
-              </Badge>
-            </TableCell>
-            <TableCell className="hidden md:table-cell">
-              {order.order_date}
-            </TableCell>
-            <TableCell className="text-right">
-              {convertToBrazilianReal(order.amount_in_cents)}
-            </TableCell>
-            <TableCell className="text-right">
-              <DeleteButton orderId={order.id} />
-            </TableCell>
-          </TableRow>
-        ))}
+        <AnimatePresence>
+          {data.map((order) => (
+            <TableRow key={order.id}>
+              <TableCell>
+                <div className="font-medium">{order.customer_name}</div>
+                <div className="hidden md:inline text-sm text-muted-foreground">
+                  {order.customer_email}
+                </div>
+              </TableCell>
+              <TableCell>
+                <Badge className={`text-xs`} variant="outline">
+                  {order.status}
+                </Badge>
+              </TableCell>
+              <TableCell className="hidden md:table-cell">
+                {order.order_date}
+              </TableCell>
+              <TableCell className="text-right">
+                {convertToBrazilianReal(order.amount_in_cents)}
+              </TableCell>
+              <TableCell className="text-right">
+                <DeleteButton orderId={order.id} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </AnimatePresence>
       </TableBody>
     </Table>
   );

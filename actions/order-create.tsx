@@ -10,6 +10,7 @@ import {
   OrderFormFieldErrors,
   CreateOrderFormPrevState,
 } from "./types";
+import { revalidateTag } from "next/cache";
 
 export async function orderCreate(
   _prevState: CreateOrderFormPrevState,
@@ -40,6 +41,8 @@ export async function orderCreate(
       headers: { "Content-Type": "application/json" },
       body: order,
     });
+
+    revalidateTag("orders");
 
     if (!response.ok) {
       throw new Error();
